@@ -14,7 +14,7 @@ namespace TestingEFCoreBehavior
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddScoped(x => new InitContext(builder.Configuration.GetConnectionString("TestEFCore")));
+            builder.Services.AddScoped(x => new InitContext(builder.Configuration.GetConnectionString("TestEFCore"), ConnectionCleanup.Close));
 
             var app = builder.Build();
 
