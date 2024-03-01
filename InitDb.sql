@@ -1,0 +1,5 @@
+﻿insert into dbo.Items (Name, CreatedDateTimeUtc) values ('A', GETUTCDATE())
+insert into dbo.Items (Name, CreatedDateTimeUtc) values ('B', GETUTCDATE())
+insert into dbo.Items (Name, CreatedDateTimeUtc) values ('C', GETUTCDATE())
+insert into dbo.Items (Name, CreatedDateTimeUtc) values ('D', GETUTCDATE())
+insert into dbo.Items (Name, CreatedDateTimeUtc) values ('E', GETUTCDATE())

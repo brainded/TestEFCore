@@ -6,28 +6,33 @@ namespace TestingEFCoreBehavior
 {
     public enum ConnectionCleanup
     {
+        None,
         Close,
         Dispose
     }
 
     public class InitContext : IDisposable
     {
-        private TestContext _testContext;
-        private SqlConnection _connection;
-        private string _connectionString;
+
+        private ShardManager _shardManager;
+        private readonly ITenant _tenant;
         private ConnectionCleanup _cleanup;
 
-        public InitContext(string connectionString, ConnectionCleanup connectionCleanup) 
+        private TestContext _testContext;
+        private SqlConnection _connection;
+
+        public InitContext(ShardManager shardManager, ITenant tenant) 
         {
-            _connectionString = connectionString;
-            _cleanup = connectionCleanup;
+            _shardManager = shardManager;
+            _tenant = tenant;
+            _cleanup = ConnectionCleanup.None;
+            
             Init();
         }
 
         public void Init()
         {
-            _connection = new SqlConnection(_connectionString);
-            _connection.Open();
+            _connection = _shardManager.OpenConnectionForKey(_tenant.TenantId);
 
             var options = new DbContextOptionsBuilder<TestContext>();
             options.UseSqlServer(_connection);

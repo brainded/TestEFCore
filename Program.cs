@@ -1,5 +1,7 @@
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Primitives;
 
 namespace TestingEFCoreBehavior
 {
@@ -16,11 +18,17 @@ namespace TestingEFCoreBehavior
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            var connectionString = builder.Configuration.GetConnectionString("TestEFCore");
+            builder.Services.AddScoped<ITenant>(sp =>
+            {
+                return new Tenant(1); //tenant hardcoded for now
+            });
 
-            builder.Services.AddScoped(x => new InitContext(connectionString, ConnectionCleanup.Close));
+            var shardConfiguration = builder.Configuration.GetSection("ShardConfiguration").Get<ShardConfiguration>();
+            builder.Services.AddSingleton(x => new ShardManager(shardConfiguration));
 
-            builder.Services.AddDbContextPool<TestContext>(options => options.UseSqlServer(connectionString));
+            var shardConnectionString = builder.Configuration.GetConnectionString("TestEFCore");
+            builder.Services.AddScoped<InitContext>();
+            builder.Services.AddDbContextPool<TestContext>(options => options.UseSqlServer(shardConnectionString));
 
             var app = builder.Build();
 
