@@ -25,7 +25,7 @@ namespace TestingEFCoreBehavior
         {
             _shardManager = shardManager;
             _tenant = tenant;
-            _cleanup = ConnectionCleanup.None;
+            _cleanup = ConnectionCleanup.Close;
             
             Init();
         }
