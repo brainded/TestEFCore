@@ -1,0 +1,14 @@
+{
+  "dependencies": {
+    "mssql1": {
+      "serviceConnectorResourceId": "",
+      "containerPorts": "1533:1433",
+      "secretStore": "LocalSecretsFile",
+      "containerName": "testefcore",
+      "containerImage": "mcr.microsoft.com/mssql/server:2019-latest",
+      "type": "mssql.container",
+      "connectionId": "ConnectionStrings:TestEFCore",
+      "dynamicId": null
+    }
+  }
+}
