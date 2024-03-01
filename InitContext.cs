@@ -17,8 +17,6 @@ namespace TestingEFCoreBehavior
         private string _connectionString;
         private ConnectionCleanup _cleanup;
 
-        private static int _openConnections;
-
         public InitContext(string connectionString, ConnectionCleanup connectionCleanup) 
         {
             _connectionString = connectionString;
@@ -30,21 +28,9 @@ namespace TestingEFCoreBehavior
         {
             _connection = new SqlConnection(_connectionString);
             _connection.Open();
-            _connection.Disposed += delegate
-            {
-                _openConnections--;
-                Trace.WriteLine($"InitContext:DISPOSED:OPENCONNECTIONS:{_openConnections}");
-            };
-
-            _openConnections++;
-            Trace.WriteLine($"InitContext:OPENED:OPENCONNECTIONS:{_openConnections}");
 
             var options = new DbContextOptionsBuilder<TestContext>();
-            options
-                .UseSqlServer(_connection, x =>
-                {
-
-                });
+            options.UseSqlServer(_connection);
 
             _testContext = new TestContext(options.Options);
         }
@@ -62,11 +48,9 @@ namespace TestingEFCoreBehavior
                 {
                     case ConnectionCleanup.Close:
                         _connection.Close();
-                        Trace.WriteLine($"InitContext:CLOSED:OPENCONNECTIONS:{_openConnections}");
                         break;
                     case ConnectionCleanup.Dispose:
                         _connection.Dispose();
-                        Trace.WriteLine($"InitContext:DISPOSED:OPENCONNECTIONS:{_openConnections}");
                         break;
                 }
             }

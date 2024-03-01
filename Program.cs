@@ -1,4 +1,6 @@
 
+using Microsoft.EntityFrameworkCore;
+
 namespace TestingEFCoreBehavior
 {
     public class Program
@@ -14,7 +16,11 @@ namespace TestingEFCoreBehavior
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddScoped(x => new InitContext(builder.Configuration.GetConnectionString("TestEFCore"), ConnectionCleanup.Close));
+            var connectionString = builder.Configuration.GetConnectionString("TestEFCore");
+
+            builder.Services.AddScoped(x => new InitContext(connectionString, ConnectionCleanup.Close));
+
+            builder.Services.AddDbContextPool<TestContext>(options => options.UseSqlServer(connectionString));
 
             var app = builder.Build();
 
